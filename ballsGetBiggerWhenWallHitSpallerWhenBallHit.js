@@ -40,7 +40,6 @@ function spawnBall(color) {
     // Calculate the spawn position
     var x = circle.centerX + randomRadius * Math.cos(angle);
     var y = (circle.centerY-(circle.radius/2)) + randomRadius * Math.sin(angle);
-    colorCounts[color].count++;
     return {
         x: x,
         y: y,
@@ -78,7 +77,7 @@ function grow(ball) {
         // Instead of growing, explode into new balls
         let newBalls = explode(ball);
         // Flag this ball for removal and add new balls
-        balls = balls.filter(b => b !== ball);
+        ball.markedForRemoval = true;
         balls.push(...newBalls);
         console.log(ball.color + " exploded!");
     }
@@ -127,9 +126,7 @@ function explode(ball) {
         };
         newBalls.push(newBall);
     }
-    newBalls.forEach(newBall => {
-        colorCounts[newBall.color].count++;
-    });
+
 
     return newBalls;
 }
@@ -160,17 +157,37 @@ function formatTimer(milliseconds) {
 }
 
 function updateTimersAndSpawnBalls() {
+    updateColorCounts();
     const timerDecrement = 1000 / 60; // Approximately 1 second divided by 60 frames
     Object.keys(colorCounts).forEach(color => {
         if (colorCounts[color].timer !== null) {
             colorCounts[color].timer -= timerDecrement;
             if (colorCounts[color].timer <= 0) {
                 colorCounts[color].timer = null; // Reset timer
-                colorCounts[color].count = 1; // Reset count to include new ball
                 balls.push(spawnBall(color)); // Spawn new ball in the middle
             }
         }
     });
+}
+
+function updateColorCounts() {
+    // Reset the count for each color to 0 before recounting
+    Object.keys(colorCounts).forEach(color => {
+        colorCounts[color].count = 0;
+    });
+
+    // Iterate over each ball to update the count of its color
+    balls.forEach(ball => {
+        if (!ball.markedForRemoval) {
+            if (colorCounts[ball.color]) {
+                colorCounts[ball.color].count += 1;
+            } else {
+                // In case a new color is somehow introduced
+                colorCounts[ball.color] = { count: 1, timer: null };
+            }
+        }
+    });
+
 }
 
 function checkBallCollisions(){
