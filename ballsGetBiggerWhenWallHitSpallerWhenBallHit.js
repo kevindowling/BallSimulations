@@ -75,13 +75,15 @@ function grow(ball) {
         ball.radius += 0.1;
     } else {
         // Instead of growing, explode into new balls
+        ball.generation++;
         let newBalls = explode(ball);
         // Flag this ball for removal and add new balls
         ball.markedForRemoval = true;
         balls.push(...newBalls);
-        console.log(ball.color + " exploded!");
+        console.log(ball.color + "gen " + ball.generation + " exploded!");
     }
 }
+
 function shrink(ball){
     if(ball.radius >=3){
         ball.radius -= 0.1;
@@ -110,8 +112,8 @@ function explode(ball) {
         let speed = (Math.random() - 0.5) * 100; // Speed magnitude
         let vx = Math.cos(angle) * speed; // Velocity component in x direction
         let vy = Math.sin(angle) * speed; // Velocity component in y direction
-        let generation = ball.generation < 7 ? ball.generation : 0 
         let color = ball.generation < 3 ? ball.color : generateRandomColor();
+        let generation = ball.generation < 3 ? ball.generation : 0 
 
         let newBall = {
             x: x,
