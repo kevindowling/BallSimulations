@@ -11,6 +11,12 @@
         canvas {
             display: block;
         }
+        .player {
+            text-align: center;
+        }
+        .current-song {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
@@ -19,7 +25,11 @@
 <button id="pauseBtn">Pause</button>
 <button id="restartBtn">Restart</button>
 
-<audio id="audioPlayer" controls autoplay></audio>
+<div class="player">
+    <div class="current-song">Current Song: <span id="songName">None</span></div>
+    <audio controls id="audioPlayer" src="" type="audio/wav" onended="nextSong()"></audio>
+    <input type="hidden" id="currentSongIndex" value="0">
+</div>
 
 <script src="ballsGetBiggerWhenWallHitSpallerWhenBallHit.js"></script>
 <script src="audio.js"></script>

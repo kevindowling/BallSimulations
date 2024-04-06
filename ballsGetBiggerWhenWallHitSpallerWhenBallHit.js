@@ -151,7 +151,7 @@ function updateColorCountDisplay() {
 }
 
 function formatTimer(milliseconds) {
-    if (milliseconds === null) return 'Starting...';
+    if (milliseconds === null) return 'In Limbo...';
     let seconds = Math.ceil(milliseconds / 1000);
     let minutes = Math.floor(seconds / 60);
     seconds = seconds % 60;
@@ -239,9 +239,25 @@ function checkBallCollisions(){
         }
 }
 
+function drawSongOverlay() {
+    const songName = document.getElementById('songName').textContent;
+    const text = `Music supplied by StreamBeats\nCurrent Song: ${songName}`;
+    const lines = text.split('\n');
 
+    // Set text properties
+    ctx.font = '18px Arial';
+    ctx.fillStyle = 'white';
+    ctx.textAlign = 'right';
+    ctx.textBaseline = 'top';
+
+    // Draw each line of text
+    lines.forEach((line, index) => {
+        ctx.fillText(line, canvas.width - 10, 10 + (index * 24)); // Adjust padding and line height as needed
+    });
+}
 
 function draw() {
+
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
     // Background
@@ -295,6 +311,7 @@ function draw() {
     checkBallCollisions();
     updateTimersAndSpawnBalls();
     updateColorCountDisplay();
+    drawSongOverlay();
     requestAnimationFrame(draw);
 }
 
